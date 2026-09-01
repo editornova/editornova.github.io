@@ -298,6 +298,7 @@ window.addEventListener("resize", () => {
   if (showreelExpanded && !showreelClosing) {
     setShowreelBounds(getExpandedShowreelBounds());
   }
+  updateMarqueeDistances();
 });
 
 document.addEventListener("keydown", (event) => {
@@ -328,6 +329,20 @@ document.querySelectorAll(".reveal").forEach((element, index) => {
     revealObserver.observe(element);
   }
 });
+
+function updateMarqueeDistances() {
+  document.querySelectorAll(".tool-track").forEach((track) => {
+    const firstGroup = track.querySelector(".tool-group");
+    if (!firstGroup) return;
+
+    const styles = window.getComputedStyle(track);
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
+    const distance = firstGroup.getBoundingClientRect().width + gap;
+    track.style.setProperty("--marquee-shift", `-${distance}px`);
+  });
+}
+
+updateMarqueeDistances();
 
 let scrollTarget = window.scrollY;
 let scrollCurrent = window.scrollY;
