@@ -15,8 +15,11 @@ let ringY = pointerY;
 let showreelExpanded = false;
 let showreelClosing = false;
 let showreelOriginBounds = null;
+let showreelPlaceholder = null;
 
 if (canUseCustomCursor) {
+  document.body.classList.add("custom-cursor");
+
   function moveCursor(event) {
     pointerX = event.clientX;
     pointerY = event.clientY;
@@ -206,6 +209,11 @@ inlineVideos.forEach((video) => playbackObserver.observe(video));
 function openShowreel() {
   if (!heroVideo || showreelExpanded || showreelClosing) return;
   showreelOriginBounds = heroReelWrap.getBoundingClientRect();
+  showreelPlaceholder = document.createElement("span");
+  showreelPlaceholder.className = "showreel-placeholder";
+  showreelPlaceholder.style.width = `${showreelOriginBounds.width}px`;
+  showreelPlaceholder.style.height = `${showreelOriginBounds.height}px`;
+  heroReelWrap.before(showreelPlaceholder);
   setShowreelBounds(showreelOriginBounds);
   showreelExpanded = true;
   heroReelWrap.classList.add("is-expanded");
@@ -228,11 +236,16 @@ function openShowreel() {
 function closeShowreel() {
   if (!showreelExpanded || showreelClosing) return;
   showreelClosing = true;
+  heroReelWrap.classList.add("is-closing");
   if (showreelOriginBounds) setShowreelBounds(showreelOriginBounds);
   window.setTimeout(() => {
     showreelExpanded = false;
     showreelClosing = false;
     heroReelWrap.classList.remove("is-expanded");
+    heroReelWrap.classList.remove("is-closing");
+    heroReelWrap.classList.add("is-settled");
+    showreelPlaceholder?.remove();
+    showreelPlaceholder = null;
     heroReelWrap.removeAttribute("style");
     document.body.classList.remove("showreel-open");
     heroVideo.muted = true;
@@ -245,8 +258,8 @@ function getExpandedShowreelBounds() {
   const ratio = heroVideo.videoWidth && heroVideo.videoHeight
     ? heroVideo.videoWidth / heroVideo.videoHeight
     : 16 / 9;
-  const maxWidth = Math.min(window.innerWidth * 0.86, 1280);
-  const maxHeight = Math.min(window.innerHeight * 0.74, 760);
+  const maxWidth = Math.min(window.innerWidth * 0.8, 1180);
+  const maxHeight = Math.min(window.innerHeight * 0.68, 680);
   let width = maxWidth;
   let height = width / ratio;
 
@@ -292,6 +305,12 @@ heroReelFrame.addEventListener("keydown", (event) => {
 document.querySelector(".showreel-close")?.addEventListener("click", (event) => {
   event.stopPropagation();
   closeShowreel();
+});
+
+document.addEventListener("click", (event) => {
+  if (showreelExpanded && !heroReelWrap.contains(event.target)) {
+    closeShowreel();
+  }
 });
 
 window.addEventListener("resize", () => {
