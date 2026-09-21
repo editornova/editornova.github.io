@@ -522,6 +522,7 @@ body.showreel-open::before {
 }
 .short-form-grid:empty { display: none; }
 .short-form-card { min-width: 0; }
+.short-form-grid:has(.short-form-card:only-child) .short-form-card { grid-column: 2; }
 .short-form-meta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--steel); font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; }
 .short-form-meta span:first-child { color: var(--accent); }
 .short-form-card .project-video { width: 100%; aspect-ratio: 9 / 16; }
@@ -672,6 +673,7 @@ body.showreel-open::before {
   .project-pair-vertical .project:nth-child(2) { margin-left: 0; }
   .project-pair-vertical .project-video { margin-right: auto; margin-left: auto; }
   .short-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 16px; padding: 42px 0 75px; }
+  .short-form-grid:has(.short-form-card:only-child) .short-form-card { grid-column: 1 / -1; width: min(100%, 280px); justify-self: center; }
   .short-form-card .project-video { width: 100%; }
   .project-pair-square { grid-template-columns: 1fr; gap: 85px; }
   .project-pair-square .project-video { width: 100%; }
