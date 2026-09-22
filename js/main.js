@@ -6,6 +6,8 @@ const cursorLabel = document.querySelector(".cursor-label");
 const menuToggle = document.querySelector(".menu-toggle");
 const mobileNav = document.querySelector(".mobile-nav");
 const shortFormGrid = document.querySelector("#short-form-grid");
+const hero = document.querySelector("#hero");
+const heroShortForm = document.querySelector("#hero-short-form");
 const playbackObserver = new IntersectionObserver(handlePlayback, { threshold: 0.2 });
 let inlineVideos = [];
 let pointerX = window.innerWidth / 2;
@@ -209,12 +211,32 @@ async function fileExists(source) {
 
 async function loadShortFormVideos() {
   if (!shortFormGrid) return;
-  const sources = Array.from({ length: 6 }, (_, index) => `assets/short-${String(index + 1).padStart(2, "0")}.mp4`);
-  const availableSources = (await Promise.all(sources.map(async (source) => (await fileExists(source) ? source : null)))).filter(Boolean);
+  const shortVideos = await Promise.all(Array.from({ length: 6 }, async (_, index) => {
+    const videoIndex = index + 1;
+    const candidates = [`assets/short-${String(videoIndex).padStart(2, "0")}.mp4`, `assets/short-${videoIndex}.mp4`];
+    const source = (await Promise.all(candidates.map(async (candidate) => ((await fileExists(candidate)) ? candidate : null)))).find(Boolean);
+    return source ? { source, index: videoIndex } : null;
+  }));
+  const availableVideos = shortVideos.filter(Boolean);
+  const featuredVideo = availableVideos.find((video) => video.index === 1);
+  const gridVideos = availableVideos.filter((video) => video.index !== 1);
 
-  availableSources.forEach((source, index) => shortFormGrid.append(createShortFormCard(source, index + 1)));
+  shortFormGrid.classList.remove("is-count-4", "is-count-5");
+  if (gridVideos.length === 4 || gridVideos.length === 5) {
+    shortFormGrid.classList.add(`is-count-${gridVideos.length}`);
+  }
+
+  if (featuredVideo && heroShortForm) {
+    heroShortForm.hidden = false;
+    hero.classList.add("has-featured-video");
+    const featuredNumber = String(featuredVideo.index).padStart(2, "0");
+    heroShortForm.innerHTML = `<div class="short-form-meta"><span>${featuredNumber}</span><span>SHORT-FORM EDIT</span></div><div class="project-video" role="button" tabindex="0" aria-label="Toggle featured short-form video ${featuredNumber} sound" data-cursor="SOUND"><video autoplay muted loop playsinline preload="metadata" data-video-src="${featuredVideo.source}"></video><span class="video-skeleton" aria-hidden="true"></span>${soundIcon()}</div>`;
+    heroShortForm.querySelectorAll("video").forEach(bindVideo);
+  }
+
+  gridVideos.forEach((video) => shortFormGrid.append(createShortFormCard(video.source, video.index)));
   shortFormGrid.querySelectorAll("video").forEach(bindVideo);
-  updateProjectNumbers(availableSources.length);
+  updateProjectNumbers(availableVideos.length);
 }
 
 document.querySelectorAll(".project-video video").forEach(bindVideo);

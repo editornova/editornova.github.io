@@ -141,6 +141,7 @@ body.cursor-hover .cursor-dot { width: 3px; height: 3px; background: var(--void)
   padding-top: 34px;
   padding-bottom: 8px;
 }
+.hero.has-featured-video { grid-template-columns: minmax(0, 1fr) minmax(220px, 360px); gap: clamp(40px, 7vw, 110px); }
 
 .ghost-name {
   position: absolute;
@@ -200,6 +201,8 @@ body.cursor-hover .cursor-dot { width: 3px; height: 3px; background: var(--void)
 
 .pill-button:hover { color: var(--white); background: var(--accent); transform: translateY(-3px); }
 .pill-button span { font-size: 15px; line-height: 0; }
+.hero-short-form { align-self: center; width: min(100%, 350px); justify-self: end; }
+.hero-short-form .project-video { width: 100%; aspect-ratio: 9 / 16; }
 
 .hero-reel-frame {
   position: relative;
@@ -521,8 +524,15 @@ body.showreel-open::before {
   border-bottom: 1px solid var(--graphite);
 }
 .short-form-grid:empty { display: none; }
-.short-form-card { min-width: 0; }
+.short-form-card { width: min(100%, 370px); min-width: 0; justify-self: center; }
 .short-form-grid:has(.short-form-card:only-child) .short-form-card { grid-column: 2; }
+.short-form-grid:has(.short-form-card:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(32px, 8vw, 120px); }
+.short-form-grid.is-count-4 { grid-template-columns: repeat(2, minmax(0, 370px)); justify-content: center; gap: clamp(32px, 8vw, 120px); }
+.short-form-grid.is-count-4 .short-form-card { width: 100%; }
+.short-form-grid.is-count-5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.short-form-grid.is-count-5 .short-form-card { grid-column: span 2; }
+.short-form-grid.is-count-5 .short-form-card:nth-child(4) { grid-column: 2 / span 2; }
+.short-form-grid.is-count-5 .short-form-card:nth-child(5) { grid-column: 4 / span 2; }
 .short-form-meta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--steel); font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; }
 .short-form-meta span:first-child { color: var(--accent); }
 .short-form-card .project-video { width: 100%; aspect-ratio: 9 / 16; }
@@ -652,11 +662,12 @@ body.showreel-open::before {
   .menu-toggle { display: block; color: var(--white); font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; }
   .mobile-nav { position: absolute; top: 58px; right: 0; display: flex; flex-direction: column; gap: 14px; width: 150px; padding: 18px; background: var(--midnight); border: 1px solid var(--graphite); border-radius: 8px; opacity: 0; pointer-events: none; transform: translateY(-8px); transition: opacity 180ms ease, transform 180ms ease; }
   .mobile-nav.is-open { opacity: 1; pointer-events: auto; transform: translateY(0); }
-  .hero { grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 28px; min-height: calc(100svh - 62px); padding-top: 64px; }
+  .hero, .hero.has-featured-video { grid-template-columns: 1fr; grid-template-rows: auto auto auto; gap: 28px; min-height: auto; padding-top: 64px; }
   .ghost-name { top: 118px; font-size: 30vw; }
   .hero-copy { margin-top: 0; padding-bottom: 0; }
   .hero-copy h1 { margin: 18px 0 18px; font-size: clamp(54px, 15vw, 86px); }
   .hero-description { max-width: 530px; margin-bottom: 24px; font-size: clamp(20px, 6.1vw, 27px); }
+  .hero-short-form { width: min(100%, 300px); justify-self: center; }
   .video-sound-indicator { opacity: 1; transform: translateY(0) scale(1); }
   .hero-footer { gap: 8px; flex-wrap: nowrap; }
   .hero-footer a { width: auto; }
@@ -674,6 +685,12 @@ body.showreel-open::before {
   .project-pair-vertical .project-video { margin-right: auto; margin-left: auto; }
   .short-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 16px; padding: 42px 0 75px; }
   .short-form-grid:has(.short-form-card:only-child) .short-form-card { grid-column: 1 / -1; width: min(100%, 280px); justify-self: center; }
+  .short-form-grid.is-count-4,
+  .short-form-grid.is-count-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: stretch; gap: 30px 16px; }
+  .short-form-grid.is-count-5 .short-form-card,
+  .short-form-grid.is-count-5 .short-form-card:nth-child(4),
+  .short-form-grid.is-count-5 .short-form-card:nth-child(5) { grid-column: auto; }
+  .short-form-card { width: 100%; }
   .short-form-card .project-video { width: 100%; }
   .project-pair-square { grid-template-columns: 1fr; gap: 85px; }
   .project-pair-square .project-video { width: 100%; }
